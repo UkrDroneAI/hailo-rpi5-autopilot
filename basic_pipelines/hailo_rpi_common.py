@@ -260,7 +260,9 @@ def INFERENCE_PIPELINE(hef_path, post_process_so, batch_size=1, config_json=None
         f'{QUEUE(name=f"{name}_hailonet_q")} ! '
         f'hailonet name={name}_hailonet hef-path={hef_path} batch-size={batch_size} {additional_params} force-writable=true ! '
         f'{QUEUE(name=f"{name}_hailofilter_q")} ! '
-        f'hailofilter name={name}_hailofilter so-path={post_process_so} {config_str} {function_name_str} qos=false '
+        f'hailofilter name={name}_hailofilter so-path={post_process_so} {config_str} {function_name_str} qos=false !'
+        f'{QUEUE(name=f"{name}_hailotracker_q")} !'
+        f'hailotracker name={name}_hailotracker keep-tracked-frames=5 keep-new-frames=3 keep-lost-frames=3 ' 
     )
 
     return inference_pipeline
