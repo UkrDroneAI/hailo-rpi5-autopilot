@@ -9,7 +9,7 @@ import logging
 
 # Adjust the sys.path to include the parent directory of the test folder
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from basic_pipelines.get_usb_camera import get_usb_video_devices
+from hailo_apps_infra.get_usb_camera import get_usb_video_devices
 
 try:
     from picamera2 import Picamera2
@@ -49,8 +49,6 @@ def test_rpi_camera_connection():
             log_file.write("RPI camera is connected and working.\n")
             log_file.write("Test completed successfully.\n")
 
-
-
 def get_device_architecture():
     """Get the device architecture from hailortcli."""
     try:
@@ -69,7 +67,6 @@ def get_detection_compatible_hefs(architecture):
     """Get a list of compatible HEF files based on the device architecture."""
     H8_HEFS = [
         "yolov5m_wo_spp.hef",
-        "yolov6n.hef",
         "yolov8s.hef",
         "yolov8m.hef",
     ]
@@ -77,7 +74,6 @@ def get_detection_compatible_hefs(architecture):
     H8L_HEFS = [
         "yolov8s_h8l.hef",
         "yolov6n.hef",
-        "yolox_s_leaky_h8l_mz.hef"
     ]
     hef_list = H8L_HEFS
     if architecture == 'hailo8':
@@ -162,7 +158,6 @@ def test_all_pipelines():
                 assert "frame" in stdout.decode().lower(), f"{pipeline} (video input) did not process any frames"
                 assert "detection" in stdout.decode().lower(), f"{pipeline} (video input) did not make any detections"
 
-
 def test_all_pipelines_cameras():
     """
     Combined test function for basic pipeline scripts with different input sources.
@@ -221,7 +216,7 @@ def test_detection_hefs():
         log_file_path = os.path.join(log_dir, f"detection_{hef_name}_video_test.log")
         logging.info(f"Running detection with {hef_name} (video input)")
         with open(log_file_path, "w") as log_file:
-            process = subprocess.Popen(['python', 'basic_pipelines/detection.py', '--input', 'resources/detection0.mp4', '--hef-path', hef],
+            process = subprocess.Popen(['python', 'basic_pipelines/detection.py', '--input', 'resources/example.mp4', '--hef-path', hef],
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             try:
                 time.sleep(TEST_RUN_TIME)
@@ -256,7 +251,7 @@ def test_pose_hefs():
         log_file_path = os.path.join(log_dir, f"pose_{hef_name}_video_test.log")
         logging.info(f"Running pose with {hef_name} (video input)")
         with open(log_file_path, "w") as log_file:
-            process = subprocess.Popen(['python', 'basic_pipelines/pose_estimation.py', '--input', 'resources/detection0.mp4', '--hef-path', hef],
+            process = subprocess.Popen(['python', 'basic_pipelines/pose_estimation.py', '--input', 'resources/example.mp4', '--hef-path', hef],
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             try:
                 time.sleep(TEST_RUN_TIME)
@@ -291,7 +286,7 @@ def test_seg_hefs():
         log_file_path = os.path.join(log_dir, f"seg_{hef_name}_video_test.log")
         logging.info(f"Running seg with {hef_name} (video input)")
         with open(log_file_path, "w") as log_file:
-            process = subprocess.Popen(['python', 'basic_pipelines/instance_segmentation.py', '--input', 'resources/detection0.mp4', '--hef-path', hef],
+            process = subprocess.Popen(['python', 'basic_pipelines/instance_segmentation.py', '--input', 'resources/example.mp4', '--hef-path', hef],
                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             try:
                 time.sleep(TEST_RUN_TIME)
@@ -361,14 +356,14 @@ def test_detection_retraining():
 #             # Start the process
 #             process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 #             logging.info(f"Running {pipeline} with --use-frame flag using camera input")
-            
+
 #             try:
 #                 # Let the process run for the specified test time
 #                 time.sleep(TEST_RUN_TIME)
-                
+
 #                 # Attempt to terminate the process
 #                 process.send_signal(signal.SIGTERM)
-                
+
 #                 try:
 #                     # Wait for process to exit and capture output within a timeout
 #                     stdout, stderr = process.communicate(timeout=5)
@@ -377,7 +372,7 @@ def test_detection_retraining():
 #                     process.kill()
 #                     stdout, stderr = process.communicate()
 #                     pytest.fail(f"{pipeline} with --use-frame flag could not be terminated within 5 seconds after running for {TEST_RUN_TIME} seconds")
-                
+
 #                 # Decode outputs
 #                 stdout_str, stderr_str = stdout.decode(), stderr.decode()
 
@@ -394,7 +389,7 @@ def test_detection_retraining():
 #                 # Log that the test completed successfully for this pipeline
 #                 log_file.write(f"{pipeline} with --use-frame flag test passed: completed without errors.\n")
 #                 logging.info(f"{pipeline} with --use-frame flag test completed successfully.")
-            
+
 #             except Exception as e:
 #                 # Ensure any exceptions are logged before failing
 #                 logging.error(f"Error occurred in test for {pipeline} with --use-frame flag: {e}")

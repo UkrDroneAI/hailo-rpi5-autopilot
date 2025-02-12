@@ -17,14 +17,12 @@ def test_check_hailo_runtime_installed():
 def test_check_required_files():
     """Test if required files exist."""
     required_files = [
-        'setup_env.sh',
+        'setup.py',
         'download_resources.sh',
-        'compile_postprocess.sh',
         'requirements.txt',
         'basic_pipelines/detection.py',
         'basic_pipelines/pose_estimation.py',
-        'basic_pipelines/instance_segmentation.py',
-        'basic_pipelines/hailo_rpi_common.py'
+        'basic_pipelines/instance_segmentation.py'
     ]
     for file in required_files:
         assert os.path.exists(file), f"Error: {file} is missing."
@@ -37,7 +35,7 @@ def test_environment():
     assert sys.version_info >= (3, 6), "Python 3.6 or higher is required."
     
     # Check for required Python packages
-    required_packages = ['gi', 'numpy', 'opencv-python', 'setproctitle', 'hailo']
+    required_packages = ['gi', 'numpy', 'opencv-python', 'setproctitle', 'hailo', 'hailo_apps_infra']
     for package in required_packages:
         try:
             if package == 'opencv-python':
@@ -61,7 +59,7 @@ def test_gstreamer_installation():
 
 def test_setup_env():
     """Test setup_env.sh script."""
-    result = subprocess.run(['bash', '-c', 'source setup_env.sh && env'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    result = subprocess.run(['bash', '-c', 'pip install -v -e .'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     stdout_str = result.stdout
     stderr_str = result.stderr
 
