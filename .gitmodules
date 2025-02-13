@@ -1,0 +1,3 @@
+[submodule "gstreamer-ardupilot"]
+	path = gstreamer-ardupilot
+	url = git@github.com:UkrDroneAI/gstreamer-ardupilot.git
